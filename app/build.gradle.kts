@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -44,6 +46,12 @@ android {
             isUniversalApk = false
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        }
+    }
+    applicationVariants.all {
+        outputs.all {
+            this as BaseVariantOutputImpl
+            this.outputFileName = "${rootProject.name.lowercase()}-${versionName}.${name}.apk"
         }
     }
 }
