@@ -24,4 +24,5 @@
     <string name="version_name">版本名</string>
     <string name="proxy">代理</string>
     <string name="software_version">软件版本</string>
+    <string name="model">型号</string>
 </resources>

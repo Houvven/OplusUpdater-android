@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,8 +53,6 @@ import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.extra.SuperDropdown
-import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.Info
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import updater.ResponseResult
 import updater.Updater
@@ -84,7 +86,10 @@ fun HomeScreen() {
     val scrollState = rememberScrollState()
     var showAboutInfoDialog by remember { mutableStateOf(false) }
 
+    var expandMoreParameters by rememberSaveable { mutableStateOf(false) }
     var otaVersion by rememberSaveable { mutableStateOf(simpleSystemOtaVersion) }
+    var model by rememberSaveable { mutableStateOf("") }
+    var carrier by rememberSaveable { mutableStateOf("") }
     var otaRegion by rememberSaveable { mutableStateOf(OtaRegion.CN) }
     var proxy by rememberSaveable { mutableStateOf("") }
     var responseResult by rememberSaveable { mutableStateOf<ResponseResult?>(null) }
@@ -115,7 +120,7 @@ fun HomeScreen() {
                         showAboutInfoDialog = true
                     }) {
                         Icon(
-                            imageVector = MiuixIcons.Info,
+                            imageVector = Icons.Outlined.Info,
                             contentDescription = null
                         )
                     }
@@ -137,12 +142,45 @@ fun HomeScreen() {
                 value = otaVersion,
                 onValueChange = { otaVersion = it.trim() },
                 label = stringResource(R.string.ota_version),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { expandMoreParameters = !expandMoreParameters }
+                    ) {
+                        val icon = if (expandMoreParameters) {
+                            Icons.Outlined.ExpandLess
+                        } else {
+                            Icons.Outlined.ExpandMore
+                        }
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MiuixTheme.colorScheme.onSurfaceVariantActions
+                        )
+                    }
+                }
             )
-            TextField(
-                value = proxy,
-                onValueChange = { proxy = it.trim() },
-                label = stringResource(R.string.proxy)
-            )
+
+            AnimatedVisibility(visible = expandMoreParameters) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    TextField(
+                        value = model,
+                        onValueChange = { model = it.trim() },
+                        label = stringResource(R.string.model)
+                    )
+                    TextField(
+                        value = carrier,
+                        onValueChange = { carrier = it.trim() },
+                        label = stringResource(R.string.carrier)
+                    )
+                    TextField(
+                        value = proxy,
+                        onValueChange = { proxy = it.trim() },
+                        label = stringResource(R.string.proxy)
+                    )
+                }
+            }
 
             Column(
                 modifier = Modifier
@@ -164,6 +202,8 @@ fun HomeScreen() {
                     val args = updater.QueryUpdateArgs().also {
                         it.otaVersion = otaVersion
                         it.region = otaRegion.name
+                        it.model = model
+                        it.nvCarrier = carrier
                         it.proxy = proxy
                     }
                     coroutineScope.launch(Dispatchers.IO) {

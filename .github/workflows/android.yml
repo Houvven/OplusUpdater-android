@@ -40,6 +40,7 @@ jobs:
         working-directory: OplusUpdater
         run: |
           pwd
+          go get golang.org/x/mobile/bind
           gomobile init
           gomobile bind -target=android -androidapi 26 -v ./pkg/updater
 
