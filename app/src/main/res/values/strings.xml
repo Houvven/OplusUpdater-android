@@ -25,4 +25,6 @@
     <string name="version_name">Version Name</string>
     <string name="proxy">Proxy</string>
     <string name="software_version">Software version</string>
+    <string name="model">Model</string>
+    <string name="carrier" translatable="false">NvCarrier</string>
 </resources>
