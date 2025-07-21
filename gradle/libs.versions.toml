@@ -8,7 +8,7 @@ espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.9.0"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.06.01"
+composeBom = "2025.07.00"
 miuix = "0.4.7"
 
 [libraries]
